@@ -75,7 +75,7 @@
 
 - 📹 **실시간 모니터링**:  CCTV 영상 스트리밍 & 객체 인식
 - 🤖 **AI 객체 감지**:  Roboflow YOLOv8 기반 승객 검출
-- 🔥 **히트맵 시각화**:  혼잡 구역 한눈에 파악
+- 🔥 **히트맵 시각화**: 혼잡 구역 한눈에 파악
 - 📊 **통계 대시보드**: 시간대별 혼잡도 그래프
 - 🗺️ **경로 추천**: 덜 혼잡한 승강장 안내
 - 🎫 **행사 연동**: 콘서트/이벤트 정보 통합
@@ -84,44 +84,38 @@
 
 ## 🏗️ 시스템 아키텍처
 
+### 전체 구조
+
 ```
-┌─────────────────────────────────────────────┐
-│  ESP32-CAM (CCTV 스트리밍)                  │
-│  http://192.168.144.241:81/stream           │
-└─────────────────────────────────────────────┘
-              ↓ Video Stream
-┌─────────────────────────────────────────────┐
-│  Flask Web Server (python/server.py)        │
-│  ┌───────────────────────────────────────┐ │
-│  │  1. 영상 수신 (5초 간격 프레임 저장) │ │
-│  │  2. Socket Client → AI 서버 요청     │ │
-│  │  3. 결과 수신 & 웹 표시              │ │
-│  └───────────────────────────────────────┘ │
-└─────────────────────────────────────────────┘
-              ↓ Socket (TCP/IP:  9999)
-              ↓ "recog" 명령 전송
-┌─────────────────────────────────────────────┐
-│  AI Analysis Server (python/ai_server.py)   │
-│  ┌───────────────────────────────────────┐ │
-│  │  1. "recog" 명령 수신                │ │
-│  │  2.  Roboflow API 호출                │ │
-│  │  3. YOLOv8 객체 감지                 │ │
-│  │  4. 히트맵 생성 (Seaborn)            │ │
-│  │  5. 결과 저장 (JSON + 이미지)        │ │
-│  │  6. Socket → "analysis" 응답 전송    │ │
-│  └───────────────────────────────────────┘ │
-└─────────────────────────────────────────────┘
-              ↓ Results
-┌─────────────────────────────────────────────┐
-│  Web Dashboard (Soft UI Design)             │
-│  ┌───────────────────────────────────────┐ │
-│  │  • 실시간 CCTV 스트림                │ │
-│  │  • 객체 감지 결과 (Bounding Box)     │ │
-│  │  • 혼잡도 히트맵                     │ │
-│  │  • 통계 차트 (승객 수, 시간대)       │ │
-│  │  • 최적 경로 추천                    │ │
-│  └───────────────────────────────────────┘ │
-└─────────────────────────────────────────────┘
+ESP32-CAM (CCTV 스트리밍)
+http://192.168.144.241:81/stream
+         |
+         | Video Stream
+         ↓
+Flask Web Server (python/server.py)
+1. 영상 수신 (5초 간격 프레임 저장)
+2. Socket Client → AI 서버 요청
+3. 결과 수신 & 웹 표시
+         |
+         | Socket (TCP/IP:  9999)
+         | "recog" 명령 전송
+         ↓
+AI Analysis Server (python/ai_server. py)
+1. "recog" 명령 수신
+2. Roboflow API 호출
+3. YOLOv8 객체 감지
+4. 히트맵 생성 (Seaborn)
+5. 결과 저장 (JSON + 이미지)
+6. Socket → "analysis" 응답 전송
+         |
+         | Results
+         ↓
+Web Dashboard (Soft UI Design)
+- 실시간 CCTV 스트림
+- 객체 감지 결과 (Bounding Box)
+- 혼잡도 히트맵
+- 통계 차트 (승객 수, 시간대)
+- 최적 경로 추천
 ```
 
 ---
@@ -196,8 +190,7 @@ with open("prediction.json", "w") as json_file:
       "width": 80,
       "height": 150,
       "confidence": 0.87
-    },
-    // ... 더 많은 사람들
+    }
   ],
   "image":  {
     "width": 640,
@@ -271,7 +264,7 @@ plt.savefig('static/assets/img/heatmap.jpg')
 
 ```
 Flask Server → AI Server
-명령:  "recog"
+명령: "recog"
 의미: 프레임 분석 요청
 
 AI Server → Flask Server
@@ -292,7 +285,7 @@ def threaded(client_socket, addr):
             if client != client_socket:
                 client.send(data)
         
-        if data. decode() == "recog":
+        if data.decode() == "recog":
             # AI 분석 실행
             analyze_frame()
 ```
@@ -304,7 +297,7 @@ def threaded(client_socket, addr):
 ### 📊 데이터셋 구성
 
 **학습 데이터:**
-- **총 이미지 수**:  1,955장
+- **총 이미지 수**: 1,955장
 - **라벨링**:  수동 Bounding Box 어노테이션
 - **클래스**:  Person (승객)
 - **플랫폼**:  Roboflow
@@ -340,13 +333,13 @@ def threaded(client_socket, addr):
 **성능 지표 (Epoch 100):**
 
 | Metric | Score | 설명 |
-|---|---|---|
-| **Precision** | 94.8% | 감지한 객체 중 실제 승객 비율 |
-| **Recall** | 92.3% | 실제 승객 중 감지 성공 비율 |
-| **mAP@0.5** | 96.2% | IoU 0.5에서의 평균 정밀도 |
-| **mAP@0.5:0.95** | 87.5% | IoU 0.5~0.95 평균 정밀도 |
-| **Inference Speed** | 28ms | NVIDIA T4 GPU 기준 |
-| **Model Size** | 6.2MB | YOLOv8n (Nano) |
+|--------|-------|------|
+| Precision | 94.8% | 감지한 객체 중 실제 승객 비율 |
+| Recall | 92.3% | 실제 승객 중 감지 성공 비율 |
+| mAP@0.5 | 96.2% | IoU 0.5에서의 평균 정밀도 |
+| mAP@0.5-0.95 | 87.5% | IoU 0.5~0.95 평균 정밀도 |
+| Inference Speed | 28ms | NVIDIA T4 GPU 기준 |
+| Model Size | 6.2MB | YOLOv8n (Nano) |
 
 **학습 환경:**
 - **GPU**: NVIDIA T4 (Colab)
@@ -378,12 +371,12 @@ def threaded(client_socket, addr):
 ### 🎯 혼잡도 분류 기준
 
 | 레벨 | 승객 수 | 색상 | 설명 |
-|---|---|---|---|
-| **Level 1** | 0-5명 | 🟢 녹색 | 여유 |
-| **Level 2** | 6-10명 | 🟡 노란색 | 보통 |
-| **Level 3** | 11-15명 | 🟠 주황색 | 혼잡 |
-| **Level 4** | 16-20명 | 🔴 빨간색 | 매우 혼잡 |
-| **Level 5** | 21명 이상 | 🟣 보라색 | 위험 |
+|------|---------|------|------|
+| Level 1 | 0-5명 | 🟢 녹색 | 여유 |
+| Level 2 | 6-10명 | 🟡 노란색 | 보통 |
+| Level 3 | 11-15명 | 🟠 주황색 | 혼잡 |
+| Level 4 | 16-20명 | 🔴 빨간색 | 매우 혼잡 |
+| Level 5 | 21명 이상 | 🟣 보라색 | 위험 |
 
 ---
 
@@ -392,10 +385,10 @@ def threaded(client_socket, addr):
 **Confidence Threshold 테스트:**
 
 | Confidence | Precision | Recall | False Positives |
-|---|---|---|---|
+|------------|-----------|--------|-----------------|
 | 20% | 88.3% | 96.1% | 높음 |
 | 30% | 91.7% | 94.5% | 중간 |
-| **40%** | **94.8%** | **92.3%** | **낮음** ✅ |
+| 40% (최적) | 94.8% | 92.3% | 낮음 ✅ |
 | 50% | 96.2% | 88.7% | 매우 낮음 |
 | 60% | 97.5% | 82.4% | 거의 없음 |
 
@@ -428,31 +421,31 @@ def threaded(client_socket, addr):
 ### Backend
 
 | 기술 | 용도 | 비율 |
-|---|---|---|
-| **Python** | 서버 로직 | 1% |
-| **Flask** | 웹 프레임워크 | - |
-| **Socket** | 실시간 통신 | - |
-| **OpenCV** | 영상 처리 | - |
-| **Roboflow** | AI 객체 감지 | - |
-| **Seaborn** | 데이터 시각화 | - |
+|------|------|------|
+| Python | 서버 로직 | 1% |
+| Flask | 웹 프레임워크 | - |
+| Socket | 실시간 통신 | - |
+| OpenCV | 영상 처리 | - |
+| Roboflow | AI 객체 감지 | - |
+| Seaborn | 데이터 시각화 | - |
 
 ### Frontend
 
 | 기술 | 용도 | 비율 |
-|---|---|---|
-| **HTML** | 구조 | 30% |
-| **CSS** | 스타일 | 33% |
-| **SCSS** | 스타일 전처리 | 34. 8% |
-| **JavaScript** | 동적 기능 | 1.2% |
-| **Soft UI Dashboard** | UI 프레임워크 | - |
+|------|------|------|
+| HTML | 구조 | 30% |
+| CSS | 스타일 | 33% |
+| SCSS | 스타일 전처리 | 34. 8% |
+| JavaScript | 동적 기능 | 1.2% |
+| Soft UI Dashboard | UI 프레임워크 | - |
 
 ### AI & Hardware
 
 | 기술 | 용도 |
-|---|---|
-| **YOLOv8** | 객체 감지 모델 |
-| **Roboflow API** | 클라우드 추론 |
-| **ESP32-CAM** | CCTV 스트리밍 |
+|------|------|
+| YOLOv8 | 객체 감지 모델 |
+| Roboflow API | 클라우드 추론 |
+| ESP32-CAM | CCTV 스트리밍 |
 
 ---
 
@@ -529,7 +522,7 @@ void setup() {
     }
     
     startCameraServer();
-    Serial.print("Camera Ready!  Stream URL: http://");
+    Serial.print("Camera Ready! Stream URL: http://");
     Serial.println(WiFi.localIP());
 }
 ```
@@ -547,12 +540,12 @@ http://192.168.144.241:81/stream
 
 ```bash
 cd python
-python ai_server. py
+python ai_server.py
 ```
 
 **출력:**
 ```
->> Server Start with ip :  192.168.144.247
+>> Server Start with ip: 192.168.144.247
 >> Wait
 ```
 
@@ -599,7 +592,7 @@ http://localhost:5000/
 2. **5초마다 자동 분석**
    ```
    Flask:  프레임 저장
-   Flask → AI 서버: "recog" 명령
+   Flask → AI 서버:  "recog" 명령
    AI 서버:  YOLOv8 추론
    AI 서버:  히트맵 생성
    AI 서버 → Flask: "analysis" 응답
@@ -688,7 +681,7 @@ def threaded(client_socket, addr):
             generate_heatmap(predict_json["predictions"])
             
             # 7. 응답 전송
-            client_socket.send(f"analysis:{person_num}: level". encode())
+            client_socket. send(f"analysis:{person_num}: level". encode())
 ```
 
 ---
@@ -810,7 +803,7 @@ camera = cv2.VideoCapture("http://YOUR_ESP32_IP:81/stream")
 
 ---
 
-### 2. Roboflow API 오류
+### 2.  Roboflow API 오류
 
 **증상:**
 ```
@@ -880,12 +873,12 @@ import matplotlib.pyplot as plt
 ### 시스템 성능
 
 | 항목 | 성능 |
-|---|---|
-| **프레임 처리 속도** | 5초/프레임 |
-| **AI 추론 시간** | ~2초 |
-| **객체 감지 정확도** | 95%+ (Confidence 40%) |
-| **동시 접속** | 10+ 클라이언트 |
-| **지연 시간** | < 3초 |
+|------|------|
+| 프레임 처리 속도 | 5초/프레임 |
+| AI 추론 시간 | 약 2초 |
+| 객체 감지 정확도 | 95% 이상 (Confidence 40%) |
+| 동시 접속 | 10명 이상 |
+| 지연 시간 | 3초 미만 |
 
 ---
 
@@ -947,7 +940,7 @@ import matplotlib.pyplot as plt
 이 프로젝트는 MIT License 하에 배포됩니다.
 
 **사용 라이브러리:**
-- Soft UI Dashboard:  MIT License (Creative Tim)
+- Soft UI Dashboard: MIT License (Creative Tim)
 - Roboflow: Proprietary
 - OpenCV: Apache 2.0
 
@@ -971,7 +964,7 @@ import matplotlib.pyplot as plt
 ## 🙏 감사의 말
 
 | Flask | Roboflow | OpenCV | Soft UI |
-|---|---|---|---|
+|-------|----------|--------|---------|
 | 웹 프레임워크 | AI 플랫폼 | 영상 처리 | UI 디자인 |
 
 **특별 감사:**
@@ -984,7 +977,7 @@ import matplotlib.pyplot as plt
 
 <div align="center">
 
-## ⭐ 이 프로젝트가 마음에 드셨다면 Star를 눌러주세요! 
+## ⭐ 이 프로젝트가 마음에 드셨다면 Star를 눌러주세요!
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Deamonio/SSCAS&type=Date)](https://star-history.com/#Deamonio/SSCAS&Date)
 
