@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Environment
+.env
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+prediction.json
+frontend/static/assets/img/pre_picture.jpg
+frontend/static/assets/img/saved_picture.jpg
+frontend/static/assets/img/heatmap.jpg
+
+# Logs
+*.log
+
+# Node modules
+node_modules/
+package-lock.json

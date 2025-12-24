@@ -1,0 +1,24 @@
+{
+  "name": "sscas-web",
+  "version": "2.0.0",
+  "description": "SSCAS - Smart Surveillance and Crowd Analysis System Web Interface",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "surveillance",
+    "crowd-analysis",
+    "person-detection",
+    "density-analysis"
+  ],
+  "author": "SSCAS Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "fluent-ffmpeg": "^2.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}

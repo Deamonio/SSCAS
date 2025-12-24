@@ -1,0 +1,167 @@
+/**
+ * SSCAS Custom Styles
+ * Additional styles for improved UI/UX
+ */
+
+/* Video and Image Containers */
+.video-container,
+.heatmap-container {
+    position: relative;
+    overflow: hidden;
+    background-color: #f8f9fa;
+    border-radius: 0.6rem;
+}
+
+.video-container img,
+.heatmap-container img {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Info Items */
+.info-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-item p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+.info-item strong {
+    color: #344767;
+    display: inline-block;
+    min-width: 80px;
+}
+
+.info-item .text-muted {
+    color: #67748e !important;
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spinner 0.6s linear infinite;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Card Improvements */
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 26px -4px rgba(20, 20, 20, 0.15),
+                0 8px 9px -5px rgba(20, 20, 20, 0.06);
+}
+
+.card-body h5 {
+    color: #344767;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+/* Responsive Images */
+@media (max-width: 768px) {
+    .video-container img,
+    .heatmap-container img {
+        height: auto !important;
+        max-height: 300px;
+    }
+    
+    .info-item p {
+        font-size: 1.2rem !important;
+    }
+}
+
+/* Error States */
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+    border: 1px solid #f5c6cb;
+}
+
+/* Success States */
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+    border: 1px solid #c3e6cb;
+}
+
+/* Navigation Active State */
+.nav-link.active {
+    background: linear-gradient(195deg, #42424a 0%, #191919 100%);
+}
+
+.nav-link.active .nav-link-text {
+    color: white !important;
+}
+
+/* Smooth Transitions */
+* {
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+/* Footer Styling */
+.footer {
+    margin-top: auto;
+}
+
+.footer .copyright {
+    padding: 1rem 0;
+}
+
+/* Sidebar Improvements */
+.sidenav {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.sidenav-header {
+    padding: 1.5rem;
+}
+
+/* Breadcrumb Styling */
+nav[aria-label="breadcrumb"] h4 {
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Chart Placeholder */
+.text-center.text-muted {
+    padding: 3rem 1rem;
+}
+
+.text-center.text-muted i {
+    opacity: 0.5;
+}

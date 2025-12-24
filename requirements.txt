@@ -1,0 +1,19 @@
+# Python Dependencies for SSCAS
+
+# Web Framework
+Flask==3.0.0
+Flask-CORS==4.0.0
+
+# Computer Vision
+opencv-python==4.8.1.78
+numpy==1.24.3
+
+# AI/ML
+roboflow==1.1.9
+
+# Data Visualization
+matplotlib==3.8.2
+seaborn==0.13.0
+
+# Utilities
+python-dotenv==1.0.0
